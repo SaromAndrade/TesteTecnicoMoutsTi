@@ -5,6 +5,7 @@ using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM;
+using Ambev.DeveloperEvaluation.ORM.Seeders;
 using Ambev.DeveloperEvaluation.WebApi.Middleware;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ namespace Ambev.DeveloperEvaluation.WebApi;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         try
         {
@@ -27,7 +28,11 @@ public class Program
             builder.Services.AddEndpointsApiExplorer();
 
             builder.AddBasicHealthChecks();
-            builder.Services.AddSwaggerGen();
+             builder.Services.AddSwaggerGen(options =>
+            {
+                options.EnableAnnotations();
+
+            });
 
             builder.Services.AddDbContext<DefaultContext>(options =>
                 options.UseNpgsql(
@@ -60,7 +65,19 @@ public class Program
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<DefaultContext>();
+                    context.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal(ex, "An error occurred when applying the migrations.");
+                }
+            }
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
@@ -69,6 +86,20 @@ public class Program
             app.UseBasicHealthChecks();
 
             app.MapControllers();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<DefaultContext>();
+                try
+                {
+                    await DatabaseSeeder.SeedAsync(context);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "An error occurred while seeding the database.");
+                }
+            }
 
             app.Run();
         }
