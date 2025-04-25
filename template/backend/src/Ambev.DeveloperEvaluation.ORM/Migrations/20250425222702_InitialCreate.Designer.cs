@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ambev.DeveloperEvaluation.ORM.Migrations
 {
     [DbContext(typeof(DefaultContext))]
-    [Migration("20250425192727_InitialCreate")]
+    [Migration("20250425222702_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

@@ -14,17 +14,15 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
         }
 
-        public SaleItem(Product product, int quantity, decimal unitPrice)
+        public SaleItem(Product product, int quantity)
         {
             Product = product;
             Quantity = quantity;
-            UnitPrice = unitPrice;
         }
 
-        public Product Product { get; private set; }
+        public Product Product { get; set; }
         public int Quantity { get; private set; }
-        public decimal UnitPrice { get; private set; }
-        public decimal TotalPrice => Quantity * UnitPrice;
+        public decimal TotalPrice => Quantity * Product.Price;
         public decimal DiscountAmount { get; private set; }
         public decimal FinalPrice => TotalPrice - DiscountAmount;
 

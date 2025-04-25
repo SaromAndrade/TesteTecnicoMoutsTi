@@ -7,7 +7,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         public Rating()
         {
         }
-
         public double Rate { get; set; }
         public int Count { get; set; }
     }

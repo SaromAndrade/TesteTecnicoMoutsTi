@@ -20,31 +20,31 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             SaleNumber = saleNumber;
             Customer = customer;
             Branch = branch;
+            Status = SaleStatus.Created;    
         }
 
         public int SaleNumber { get; set; }
         public DateTime Date { get; set; }
         public User Customer { get; set; }
         public Branch Branch { get; private set; }
-        private readonly List<SaleItem> _items = new();
-        public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
+        public List<SaleItem> Items { get; set; } = new();
         public SaleStatus Status { get; private set; }
         public decimal TotalAmount { get; private set; }
         public decimal TotalDiscount { get; private set; }
         public decimal FinalAmount { get; private set; }
-        public void AddItem(Product product, int quantity, decimal unitPrice)
+        public void AddItem(Product product, int quantity)
         {
             if (Status != SaleStatus.Created)
                 throw new DomainException("Cannot add items to a completed or cancelled sale");
 
-            var item = new SaleItem(product, quantity, unitPrice);
-            _items.Add(item);
+            var item = new SaleItem(product, quantity);
+            Items.Add(item);
             RecalculateTotals();
         }
-        private void RecalculateTotals()
+        public void RecalculateTotals()
         {
-            TotalAmount = _items.Sum(i => i.TotalPrice);
-            TotalDiscount = _items.Sum(i => i.DiscountAmount);
+            TotalAmount = Items.Sum(i => i.TotalPrice);
+            TotalDiscount = Items.Sum(i => i.DiscountAmount);
             FinalAmount = TotalAmount - TotalDiscount;
         }
         public void Cancel()
