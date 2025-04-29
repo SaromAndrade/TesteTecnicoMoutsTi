@@ -2,11 +2,6 @@
 using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ambev.DeveloperEvaluation.ORM.Repositories
 {
@@ -147,35 +142,22 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             }
         }
 
-        public async Task<bool> CancelAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<bool> CancelAsync(int SaleNumber, CancellationToken cancellationToken)
         {
-            var sale = await _context.Sales
-                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+            var sale = await _context.Sales.FirstOrDefaultAsync(p => p.SaleNumber == SaleNumber, cancellationToken);
 
             if (sale == null)
-            {
-                return false;
-            }
+                throw new KeyNotFoundException($"Sale with SaleNumber {SaleNumber} not found.");
 
             if (sale.Status == SaleStatus.Cancelled)
-            {
-                return true;
-            }
+                throw new InvalidOperationException("Sale is already cancelled.");
 
-            try
-            {
-                sale.Cancel();
-                await _context.SaveChangesAsync(cancellationToken);
-                return true;
-            }
-            catch (DomainException)
-            {
-                return false;
-            }
-            catch (DbUpdateException)
-            {
-                return false;
-            }
+            sale.Cancel();
+
+            // Atualiza apenas o campo IsCancelled no banco de dados
+            _context.Sales.Update(sale);
+            await _context.SaveChangesAsync(cancellationToken);
+            return true;
         }
     }
 }

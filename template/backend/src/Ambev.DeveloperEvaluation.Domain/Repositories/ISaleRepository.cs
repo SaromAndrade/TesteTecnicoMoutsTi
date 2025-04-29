@@ -13,7 +13,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Repositories
         Task<(List<Sale> sales, int TotalItems)> GetAllAsync(int page, int size, string order, CancellationToken cancellationToken = default);
         Task<Sale?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<Sale> UpdateAsync(Guid id, Sale sale, CancellationToken cancellationToken);
-        Task<bool> CancelAsync(Guid id, CancellationToken cancellationToken);
+        Task<bool> CancelAsync(int id, CancellationToken cancellationToken);
 
     }
 }
