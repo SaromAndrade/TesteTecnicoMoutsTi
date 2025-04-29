@@ -1,8 +1,10 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.DeleteSale;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -41,7 +43,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
             return Ok<CreateSaleResponse>(response);
         }
 
-        [HttpPatch()]
+        [HttpPatch]
         [ProducesResponseType(typeof(ApiResponseWithData<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CancelSale([FromBody] CancelSaleRequest request, CancellationToken cancellationToken)
@@ -56,6 +58,24 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
                 return BadRequest(validationResult.Errors);
 
             var command = _mapper.Map<CancelSaleCommand>(request);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok<string>(result);
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ApiResponseWithData<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteSale(Guid id, CancellationToken cancellationToken)
+        {
+            var request = new DeleteSaleRequest { Id = id };
+            var validator = new DeleteSaleRequestValidator();
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
+                return BadRequest(validationResult.Errors);
+
+            var command = _mapper.Map<DeleteSaleCommand>(request);
             var result = await _mediator.Send(command, cancellationToken);
 
             return Ok<string>(result);
