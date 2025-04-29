@@ -1,9 +1,9 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Enums;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
+namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale
 {
-    public class CreateSaleResult
+    public class GetSaleResult
     {
         public Guid Id { get; set; }
         public int SaleNumber { get; set; }

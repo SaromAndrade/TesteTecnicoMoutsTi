@@ -1,9 +1,9 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Enums;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
+namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale
 {
-    public class CreateSaleResult
+    public class UpdateSaleResponse
     {
         public Guid Id { get; set; }
         public int SaleNumber { get; set; }

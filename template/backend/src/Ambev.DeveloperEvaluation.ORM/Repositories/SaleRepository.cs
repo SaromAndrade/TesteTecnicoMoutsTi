@@ -30,6 +30,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
                 .Include(s => s.Customer)
                 .Include(s => s.Branch)
                 .Include(s => s.Items)
+                .ThenInclude(i => i.Product)
                 .AsQueryable();
   
             query = order.ToLower() switch
@@ -54,7 +55,16 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
 
         public async Task<Sale?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.Sales.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+            return await _context.Sales
+                        .Include(s => s.Customer)
+                        .Include(s => s.Branch)
+                        .Include(s => s.Items)
+                        .ThenInclude(i => i.Product)
+                        .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+        }
+        public async Task<Sale?> GetBySaleNumberAsync(int saleNumber, CancellationToken cancellationToken)
+        {
+            return await _context.Sales.FirstOrDefaultAsync(p => p.SaleNumber == saleNumber, cancellationToken);
         }
 
         public async Task<Sale> UpdateAsync(Guid id, Sale updatedSale, CancellationToken cancellationToken)
@@ -63,7 +73,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
                 .Include(s => s.Customer)
                 .Include(s => s.Branch)
                 .Include(s => s.Items)
-                    .ThenInclude(i => i.Product)
+                .ThenInclude(i => i.Product)
                 .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
 
             if (existingSale == null)
@@ -76,7 +86,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
                 throw new DomainException("Cannot modify a cancelled sale");
             }
 
-            existingSale.SaleNumber = updatedSale.SaleNumber;
             existingSale.Date = updatedSale.Date;
 
             await UpdateSaleItems(existingSale, updatedSale.Items, cancellationToken);
@@ -154,7 +163,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
 
             sale.Cancel();
 
-            // Atualiza apenas o campo IsCancelled no banco de dados
             _context.Sales.Update(sale);
             await _context.SaveChangesAsync(cancellationToken);
             return true;
