@@ -22,6 +22,8 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.HasSequence<int>("sale_salenumber_seq");
+
             modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Branch", b =>
                 {
                     b.Property<Guid>("Id")
@@ -103,8 +105,10 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
                     b.Property<decimal>("FinalAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("SaleNumber")
-                        .HasColumnType("integer");
+                    b.Property<int?>("SaleNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('sale_salenumber_seq')");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -141,9 +145,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
 
                     b.Property<Guid?>("SaleId")
                         .HasColumnType("uuid");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 

@@ -49,5 +49,10 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         {
             return await _context.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         }
+        public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Products
+                .AnyAsync(p => p.Id == id, cancellationToken);
+        }
     }
 }

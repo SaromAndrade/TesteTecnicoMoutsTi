@@ -20,6 +20,15 @@ public class DefaultContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) 
     {
+        modelBuilder.Entity<Sale>(entity =>
+        {
+            entity.Property(e => e.SaleNumber)
+                  .ValueGeneratedOnAdd()
+                  .HasDefaultValueSql("nextval('sale_salenumber_seq')");
+        });
+
+        modelBuilder.HasSequence<int>("sale_salenumber_seq");
+
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
     }

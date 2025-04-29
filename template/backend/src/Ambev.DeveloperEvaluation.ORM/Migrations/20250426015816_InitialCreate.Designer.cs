@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ambev.DeveloperEvaluation.ORM.Migrations
 {
     [DbContext(typeof(DefaultContext))]
-    [Migration("20250425222702_InitialCreate")]
+    [Migration("20250426015816_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,8 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.HasSequence<int>("sale_salenumber_seq");
 
             modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Branch", b =>
                 {
@@ -106,8 +108,10 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
                     b.Property<decimal>("FinalAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("SaleNumber")
-                        .HasColumnType("integer");
+                    b.Property<int?>("SaleNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValueSql("nextval('sale_salenumber_seq')");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -144,9 +148,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
 
                     b.Property<Guid?>("SaleId")
                         .HasColumnType("uuid");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 

@@ -15,15 +15,16 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
         }
 
-        public Sale(int saleNumber, User customer, Branch branch)
+        public Sale( User customer, Branch branch)
         {
-            SaleNumber = saleNumber;
+            Id = Guid.NewGuid();
             Customer = customer;
             Branch = branch;
-            Status = SaleStatus.Created;    
+            Status = SaleStatus.Created;   
+            Date = DateTime.UtcNow;
         }
 
-        public int SaleNumber { get; set; }
+        public int? SaleNumber { get; set; }
         public DateTime Date { get; set; }
         public User Customer { get; set; }
         public Branch Branch { get; private set; }

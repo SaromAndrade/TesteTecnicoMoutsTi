@@ -11,5 +11,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Repositories
     {
         Task<Branch?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<List<Branch>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

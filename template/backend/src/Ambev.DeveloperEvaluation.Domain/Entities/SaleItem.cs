@@ -16,8 +16,12 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
         public SaleItem(Product product, int quantity)
         {
+            if (quantity > 20)
+                throw new DomainException("Quantity cannot exceed 20 items for the same product");
+
             Product = product;
             Quantity = quantity;
+            CalculateDiscount();
         }
 
         public Product Product { get; set; }

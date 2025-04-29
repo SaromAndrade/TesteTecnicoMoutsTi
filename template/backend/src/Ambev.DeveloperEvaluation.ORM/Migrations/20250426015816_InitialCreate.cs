@@ -11,6 +11,9 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateSequence<int>(
+                name: "sale_salenumber_seq");
+
             migrationBuilder.CreateTable(
                 name: "Branchs",
                 columns: table => new
@@ -81,7 +84,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SaleNumber = table.Column<int>(type: "integer", nullable: false),
+                    SaleNumber = table.Column<int>(type: "integer", nullable: true, defaultValueSql: "nextval('sale_salenumber_seq')"),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
                     BranchId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -114,7 +117,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductId = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "numeric", nullable: false),
                     DiscountAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     SaleId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
@@ -180,6 +182,9 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropSequence(
+                name: "sale_salenumber_seq");
         }
     }
 }

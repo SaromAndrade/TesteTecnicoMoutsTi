@@ -27,5 +27,10 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         {
             return await _context.Branchs.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         }
+        public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Branchs
+                .AnyAsync(b => b.Id == id, cancellationToken);
+        }
     }
 }

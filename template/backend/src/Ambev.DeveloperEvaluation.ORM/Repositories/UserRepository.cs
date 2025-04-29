@@ -72,4 +72,15 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
+    /// <summary>
+    /// Checks if a user exists with the specified email address
+    /// </summary>
+    /// <param name="email">The email address to check</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>True if a user with the email exists, false otherwise</returns>
+    public async Task<bool> ExistsAsync(string email, CancellationToken cancellationToken = default)
+    {
+        return await _context.Users
+            .AnyAsync(u => u.Email == email, cancellationToken);
+    }
 }
