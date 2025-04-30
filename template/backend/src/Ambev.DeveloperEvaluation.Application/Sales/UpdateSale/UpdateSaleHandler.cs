@@ -4,8 +4,6 @@ using Ambev.DeveloperEvaluation.Domain.Services;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
-using System.Net.Http.Headers;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
 {

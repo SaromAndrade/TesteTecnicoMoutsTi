@@ -12,7 +12,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         public Branch()
         {
         }
-        public string Name { get; private set; }
-        public string Location { get; private set; }
+        public string Name { get; set; }
+        public string Location { get; set; }
     }
 }
